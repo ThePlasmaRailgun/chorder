@@ -1,5 +1,5 @@
 # Chorder input device. 
-# Credit to [Greg Priest-Dorman](chorder.cs.vassar.edu/) for the original code
+# Credit to [Greg Priest-Dorman](https://chorder.cs.vassar.edu/) for the original code
 
 ## Features:
 
@@ -33,4 +33,4 @@ In order to properly use the Meterpreter hack, you have to enter the IP and port
 
 I reccomend using Cherry MX Blue switches from SparkFun, along with the breakout board and an LED. Keycaps are usually pretty easy to find, but my favorites are [these](http://www.maxkeyboard.com/row-4-size-1x1-cherry-mx-keycap-r4-1x1.html) in a translucent color.
 
-Training materials for use of the chording keyboard can be found at Greg's [chording keyboard site](chorder.cs.vassar.edu/)
+Training materials for use of the chording keyboard can be found at Greg's [chording keyboard site](https://chorder.cs.vassar.edu/)
