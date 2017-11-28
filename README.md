@@ -16,11 +16,11 @@
 
 Meterpreter-based exploitation!
 
-Yes, you read that right, this code also supports Meterpreter exploitation of an attached computer. The default keybind to do so is \[FC- I---\] while under function mode (which can be accessed via \[--N ---P\] while under the default mode). 
+Yes, you read that right, this code also supports Meterpreter exploitation of an attached computer. The default keybind to do so is \[FC- I---\] while the function prefix is active (which can be accessed via \[--N ---P\] while no prefix is active). 
 
 ## Use:
 
-The format for showing chords is \[FCN IMRP\] where:
+The format for writing chords is \[FCN IMRP\] where:
 * F is **F**ar Thumb
 * C is **C**enter Thumb (home position)
 * N is **N**ear Thumb
