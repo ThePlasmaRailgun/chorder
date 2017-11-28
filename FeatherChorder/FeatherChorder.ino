@@ -365,6 +365,12 @@ void sendKey(byte keyState){
   case ANDROID_dpadcenter:
     sendRawKey(0x00, 0x5D);
     break;
+  // Handle the opening and attachment of meterpreter shells (ONLY WORKS ON WINDOWS!)
+  case METERPRETER_hack:
+    sendRawKey(0x80, 0x15);
+    openCmdPrompt();
+    attachMeterpreter();
+    break;
   case MEDIA_playpause:
     sendControlKey("PLAYPAUSE");
     break;
@@ -399,7 +405,15 @@ void sendKey(byte keyState){
     mode = NUMSYM;
   }
 }
+void openCmdPrompt() {
+    ble.print("AT+BLEKEYBOARD=");
+    ble.println("cmd.exe");
+    sendRawKey(
+}
 
+void attachMeterpreter() {
+    
+}
 void sendRawKey(char modKey, char rawKey){
     // Format for Bluefruit Feather is MOD-00-KEY.
     String keys = String(modKey, HEX) + "-00-" + String(rawKey, HEX);
