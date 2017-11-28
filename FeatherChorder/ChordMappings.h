@@ -148,7 +148,7 @@ const keymap_t keymap_default[128] = {
   ENUMKEY__,                        // FCN -MR-  0x76
   ENUMKEY__,                        // FCN -MRP  0x77
 
-  METERPRETER_hack,                        // FCN I---  0x78
+  ENUMKEY__,                        // FCN I---  0x78
   ENUMKEY__,                        // FCN I--P  0x79
   ENUMKEY__,                        // FCN I-R-  0x7A
   ENUMKEY__,                        // FCN I-RP  0x7B
@@ -428,7 +428,7 @@ const keymap_t keymap_function[128] = {
   ENUMKEY__,                        // FC- -MR-  0x66
   ENUMKEY__,                        // FC- -MRP  0x67
 
-  ENUMKEY__,                        // FC- I---  0x68
+  METERPRETER_hack,                        // FC- I---  0x68
   ENUMKEY__,                        // FC- I--P  0x69
   ENUMKEY__,                        // FC- I-R-  0x6A
   ENUMKEY__,                        // FC- I-RP  0x6B
