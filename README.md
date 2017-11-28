@@ -21,10 +21,10 @@ Yes, you read that right, this code also supports Meterpreter exploitation of an
 ## Use:
 
 The format for showing chords is \[FCN IMRP\] where:
-* F is _F_ar Thumb
-* C is _C_enter Thumb (home position)
-* N is _N_ear Thumb
-and IMRP are _I_ndex, _M_iddle, _R_ing, and _P_inky fingers respectively.
+* F is **F**ar Thumb
+* C is **C**enter Thumb (home position)
+* N is **N**ear Thumb
+and IMRP are **I**ndex, **M**iddle, **R**ing, and **P**inky fingers respectively.
 
 See [this](https://learn.adafruit.com/adafruit-feather-m0-bluefruit-le/pinouts?view=all#setup) guide in order to configure your Arduino IDE 
 
