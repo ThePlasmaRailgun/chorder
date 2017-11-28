@@ -1,5 +1,5 @@
 # Chorder input device. 
-# Credit to [Greg Priest-Dorman](https://chorder.cs.vassar.edu/) for the original code
+# Credit to [Greg Priest-Dorman](https://chorder.cs.vassar.edu/) for the original code (Seriously, check his stuff out.)
 
 ## Features:
 
