@@ -3,7 +3,9 @@
  * @author: clc@clcworld.net
  * additional code by: priestdo@budgardr.org
  * This version tested on/with the Adafruit Feather 32u4 Bluefruit LE
- *
+ *    
+ *    I'd reccomend using the M0
+ * 
  * It is a new arduino based chorder inspired by the SpiffChorder 
  * which can be found at http://symlink.dk/projects/spiffchorder/ 
  */
@@ -129,7 +131,7 @@ const int EnPin =  5;
 
 // Pin numbers for the keyboard switches, using the Arduino numbering.
 static const Button switch_pins[7] = {
-  Button(6),  // Pinky
+  Button(24),  // Pinky
   Button(A5),  // Ring
   Button(A4),  // Middle
   Button(A3),  // Index
