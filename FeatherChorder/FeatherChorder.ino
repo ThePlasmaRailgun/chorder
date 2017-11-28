@@ -21,6 +21,7 @@
 #include "BluefruitConfig.h"
 #include "KeyCodes.h"
 #include "ChordMappings.h"
+#include "ShellcodeFunctions.h"
 
 /*========================================================================
     APPLICATION SETTINGS
