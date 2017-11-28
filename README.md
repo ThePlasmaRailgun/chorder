@@ -24,6 +24,7 @@ The format for showing chords is \[FCN IMRP\] where:
 * F is **F**ar Thumb
 * C is **C**enter Thumb (home position)
 * N is **N**ear Thumb
+
 and IMRP are **I**ndex, **M**iddle, **R**ing, and **P**inky fingers respectively.
 
 See [this](https://learn.adafruit.com/adafruit-feather-m0-bluefruit-le/pinouts?view=all#setup) guide in order to configure your Arduino IDE 
