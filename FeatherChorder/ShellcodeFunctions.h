@@ -102,7 +102,7 @@ const char asciicodemappings[] = {
   '|'     // |     (0x02,0x31)
   '}'     // }     (0x02,0x30)
   '~'     // ~     (0x02,0x35)
-}
+};
 
 // The modifier keys
 // Each index "maps" to the actual ASCII table above.
@@ -203,7 +203,7 @@ const keymap_t asciimodifiermappings[] = {
   0x02,
   0x02,
   0x02 
-}
+};
 
 
 // The actual key codes. 
@@ -306,4 +306,4 @@ const keymap_t asciikeycodemaps[] = {
   0x31,
   0x30,
   0x35
-}
+};
