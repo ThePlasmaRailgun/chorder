@@ -12,7 +12,8 @@
 
 #include <Arduino.h>
 #include <SPI.h>
-#if not defined (_VARIANT_ARDUINO_DUE_X_)
+#define NO_SOFTWARE_SERIAL
+#if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined(NO_SOFTWARE_SERIAL)
 #include <SoftwareSerial.h>
 #endif
 
@@ -143,11 +144,11 @@ static const Button switch_pins[7] = {
 void setup(void)
 {
   // Ensure software power reset pin in high
-   pinMode(EnPin, OUTPUT);      // Make pin an output,
-   digitalWrite(EnPin, HIGH);  // and activate pullup.
+  pinMode(EnPin, OUTPUT);      // Make pin an output,
+  digitalWrite(EnPin, HIGH);  // and activate pullup.
   //while (!Serial);  // Required for Flora & Micro
   delay(500);
-  parseNet()
+  parseNet(); //Parse the network information, encode it into hexadecimal, and then insert it into the shellcode.
   Serial.begin(115200);
   Serial.println(F("Adafruit Bluefruit HID Chorder"));
   Serial.println(F("---------------------------------------"));
@@ -528,11 +529,11 @@ void sendRawKey(char modKey, char rawKey){
 void sendString(String commandstring){
     uint16_t length = sizeof(commandstring) / sizeof(commandstring[0]); // Find the size of the string to be sent
     uint16_t lengthOfAsciiSet = sizeof(asciicodemappings) / sizeof(asciicodemappings[0]); //Get the size of the ASCII code mappings tables
-    for(i = 0; i <= length; i++) { // Iterate through each character of the input string
+    for(int i = 0; i <= length; i++) { // Iterate through each character of the input string
         char charToSend = commandstring[i]; // Save the character that should be sent
         uint8_t asciiIndex = 0; // For each iteration, we need to loop through the ASCII table and find out what index the character we need to send is at
         while(asciiIndex <= lengthOfAsciiSet && asciicodemappings[asciiIndex] != charToSend) { // Actually looping through
-            asciiindex++;
+            asciiIndex++;
         }
         sendRawKey(asciimodifiermappings[asciiIndex], asciikeycodemaps[asciiIndex]); // Send the correct key with the correct modifiers. 
     }
