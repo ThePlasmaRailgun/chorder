@@ -429,7 +429,7 @@ const keymap_t keymap_function[128] = {
   ENUMKEY__,                        // FC- -MRP  0x67
 
   METERPRETER_hack,                 // FC- I---  0x68
-  ENUMKEY__,                        // FC- I--P  0x69
+  SHELLCODE_ygp,                    // FC- I--P  0x69
   ENUMKEY__,                        // FC- I-R-  0x6A
   ENUMKEY__,                        // FC- I-RP  0x6B
   ENUMKEY__,                        // FC- IM--  0x6C
