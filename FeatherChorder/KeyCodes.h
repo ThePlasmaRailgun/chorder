@@ -167,7 +167,7 @@ enum keycodes {
   ANDROID_back,         // aka, KEY_esc with NO MODS
   ANDROID_dpadcenter,   // aka, KEY_KP5 with NO MODS
   METERPRETER_hack,     // hacks the target computer by inputing a long string of characters into the command prompt
-  SHELLCODE_ygp
+  SHELLCODE_ygp,
   DIV_Last
 };
 
